@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>New Tab</title>
+  <link rel="icon" type="image/svg+xml" href="icons/icon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/icon32.png" />
+  <link rel="stylesheet" href="newtab.css" />
+</head>
+<body>
+  <iframe id="linkdeck" title="Linkdeck" hidden></iframe>
+
+  <div id="offline" class="offline" hidden>
+    <div class="offline-card">
+      <img class="offline-icon" src="icons/icon128.png" width="48" height="48" alt="" />
+      <h1>Linkdeck isn't running</h1>
+      <p>Couldn't reach <code id="linkdeck-url"></code>.</p>
+      <p class="hint">Start it from the project folder with <code>npm run service:install</code><br />(or check <code>npm run service:status</code>). This page retries automatically.</p>
+      <button id="btn-retry" type="button">Retry now</button>
+    </div>
+  </div>
+
+  <script src="newtab.js"></script>
+</body>
+</html>

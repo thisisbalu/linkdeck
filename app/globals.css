@@ -1,0 +1,179 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .scrollbar-none { scrollbar-width: none; }
+  .scrollbar-none::-webkit-scrollbar { display: none; }
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   THEME: DARK  (default — .dark class on <html>)
+══════════════════════════════════════════════════════════════════ */
+@layer base {
+  :root, .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 5%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 5%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+    --radius: 0.5rem;
+
+    --app-bg:             #09090b;
+    --app-surface:        #18181b;
+    --app-surface2:       #27272a;
+    --app-border:         #3f3f46;
+    --app-border-soft:    #27272a;
+    --app-text:           #f4f4f5;
+    --app-text-muted:     #a1a1aa;
+    --app-text-faint:     #52525b;
+    --app-cta-bg:         #f4f4f5;
+    --app-cta-text:       #09090b;
+    --app-search-bg:      #27272a;
+    --app-search-border:  #3f3f46;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   THEME: LIGHT  (.theme-light class on <html>)
+══════════════════════════════════════════════════════════════════ */
+@layer base {
+  .theme-light {
+    --background: 0 0% 100%;
+    --foreground: 220 9% 13%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 9% 13%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 9% 13%;
+    --primary: 217 89% 50%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 213 27% 94%;
+    --secondary-foreground: 220 9% 13%;
+    --muted: 213 27% 94%;
+    --muted-foreground: 220 9% 46%;
+    --accent: 213 27% 90%;
+    --accent-foreground: 220 9% 13%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 213 27% 88%;
+    --input: 213 27% 88%;
+    --ring: 217 89% 50%;
+    --radius: 0.5rem;
+
+    --app-bg:             #f1f3f4;
+    --app-surface:        #ffffff;
+    --app-surface2:       #f8f9fa;
+    --app-border:         #e8eaed;
+    --app-border-soft:    #f1f3f4;
+    --app-text:           #202124;
+    --app-text-muted:     #5f6368;
+    --app-text-faint:     #9aa0a6;
+    --app-cta-bg:         #1a73e8;
+    --app-cta-text:       #ffffff;
+    --app-search-bg:      #ffffff;
+    --app-search-border:  #dadce0;
+  }
+}
+
+/* ── Base resets ────────────────────────────────────────────────── */
+@layer base {
+  * { @apply border-border; }
+  body { @apply bg-background text-foreground; }
+}
+
+/* ── Light — override body bg to the NTP grey ───────────────────── */
+.theme-light body {
+  background: var(--app-bg);
+  color: var(--app-text);
+}
+
+/* ── Page backgrounds (⋯ → Background) ─────────────────────────────
+   Chosen per theme as html.bg-<id>. Glow colours are --glow-1/2/3
+   ("r g b"), set by ThemeProvider and shifted through the day when
+   "Match time of day" is on. Pure CSS: no images, no extra requests. */
+:root {
+  --glow-1: 99 102 241;
+  --glow-2: 124 58 237;
+  --glow-3: 14 165 233;
+  --glow-strength: 1;
+}
+
+html.dark body { background-color: #09090b; }
+
+html.dark.bg-aurora body {
+  background:
+    radial-gradient(1100px 600px at 12% -10%, rgb(var(--glow-1) / calc(0.22 * var(--glow-strength))), transparent 60%),
+    radial-gradient(900px 600px at 95% 0%, rgb(var(--glow-2) / calc(0.18 * var(--glow-strength))), transparent 55%),
+    radial-gradient(900px 700px at 50% 115%, rgb(var(--glow-3) / calc(0.10 * var(--glow-strength))), transparent 60%),
+    #09090b;
+  background-attachment: fixed;
+}
+
+html.dark.bg-dots body {
+  background:
+    radial-gradient(900px 500px at 50% -10%, rgb(var(--glow-1) / calc(0.14 * var(--glow-strength))), transparent 70%),
+    radial-gradient(circle at 1px 1px, rgb(255 255 255 / 0.07) 1px, transparent 0) 0 0 / 22px 22px,
+    #09090b;
+  background-attachment: fixed;
+}
+
+html.dark.bg-midnight body {
+  background:
+    radial-gradient(1000px 500px at 50% -15%, rgb(var(--glow-1) / calc(0.12 * var(--glow-strength))), transparent 70%),
+    linear-gradient(180deg, #0b1020 0%, #0a0d18 45%, #08090f 100%);
+  background-attachment: fixed;
+}
+html.dark.bg-midnight .ld-card { border-color: rgb(var(--glow-1) / 0.18) !important; }
+
+html.dark.bg-mesh body {
+  background:
+    radial-gradient(700px 500px at 0% 0%, rgb(var(--glow-2) / calc(0.30 * var(--glow-strength))), transparent 60%),
+    radial-gradient(700px 500px at 100% 10%, rgb(var(--glow-3) / calc(0.22 * var(--glow-strength))), transparent 60%),
+    radial-gradient(800px 600px at 70% 100%, rgb(var(--glow-1) / calc(0.14 * var(--glow-strength))), transparent 60%),
+    #0a0a12;
+  background-attachment: fixed;
+}
+/* Film grain under the content (z-index -1 sits above the page background, below everything else). */
+html.dark.bg-mesh body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.08;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+html.theme-light.bg-soft body {
+  background:
+    radial-gradient(1000px 520px at 15% -10%, rgb(var(--glow-1) / calc(0.12 * var(--glow-strength))), transparent 60%),
+    radial-gradient(900px 520px at 100% 0%, rgb(var(--glow-3) / calc(0.10 * var(--glow-strength))), transparent 55%),
+    #f6f7fb;
+  background-attachment: fixed;
+}
+
+html.theme-light.bg-dots body {
+  background:
+    radial-gradient(900px 500px at 50% -10%, rgb(var(--glow-1) / calc(0.10 * var(--glow-strength))), transparent 70%),
+    radial-gradient(circle at 1px 1px, rgb(0 0 0 / 0.07) 1px, transparent 0) 0 0 / 22px 22px,
+    #f6f7fb;
+  background-attachment: fixed;
+}
+
+/* Cards become frosted glass so the background shows through softly. */
+html:not(.bg-plain) .ld-card { backdrop-filter: blur(14px) saturate(1.15); }
+html.dark:not(.bg-plain) .ld-card-solid { background: rgb(24 24 27 / 0.62) !important; }

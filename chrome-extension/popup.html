@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Linkdeck</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-icon">
+      <img src="icons/icon48.png" width="18" height="18" alt="" />
+    </div>
+    <span class="header-title">Linkdeck</span>
+    <span class="header-badge" id="saved-badge" hidden>✓ Saved</span>
+  </div>
+
+  <!-- ── State: loading ── -->
+  <div id="state-loading" class="state">
+    <div class="loading-row">
+      <div class="spinner"></div>
+      <span class="loading-text">Reading page…</span>
+    </div>
+  </div>
+
+  <!-- ── State: already saved ── -->
+  <div id="state-exists" class="state" hidden>
+    <div class="exists-banner">
+      <span class="exists-icon">🔖</span>
+      <div>
+        <div class="exists-title">Already in Linkdeck</div>
+        <div class="exists-url" id="exists-url"></div>
+      </div>
+    </div>
+    <button class="btn-ghost" id="btn-open-linkdeck">Open Linkdeck →</button>
+  </div>
+
+  <!-- ── State: ready (edit + save) ── -->
+  <div id="state-ready" class="state" hidden>
+    <div class="domain-row">
+      <img class="favicon" id="favicon-img" src="" width="14" height="14" alt="" />
+      <span class="domain" id="domain-label"></span>
+    </div>
+
+    <input
+      type="text"
+      id="input-title"
+      class="field field-title"
+      placeholder="Title"
+      autocomplete="off"
+      spellcheck="false"
+    />
+
+    <textarea
+      id="input-description"
+      class="field field-desc"
+      placeholder="Description (optional)"
+      rows="2"
+      spellcheck="false"
+    ></textarea>
+
+    <div class="meta-row" id="meta-row">
+      <!-- category badge + tags injected here -->
+    </div>
+
+    <div id="error-msg" class="error-msg" hidden></div>
+
+    <button class="btn-primary" id="btn-save">Save bookmark</button>
+
+    <!-- Port setting -->
+    <div class="port-row">
+      <span class="port-label">Linkdeck port:</span>
+      <input type="number" id="input-port" class="port-input" value="3000" min="1" max="65535" />
+    </div>
+  </div>
+
+  <!-- ── State: saved ── -->
+  <div id="state-saved" class="state" hidden>
+    <div class="success-banner">✓ Bookmark saved successfully</div>
+    <button class="btn-ghost" id="btn-open-linkdeck-2">Open Linkdeck →</button>
+    <button class="btn-primary" id="btn-save-another">← Save another page</button>
+  </div>
+
+  <!-- ── State: error ── -->
+  <div id="state-error" class="state" hidden>
+    <div class="error-banner" id="error-banner"></div>
+    <button class="btn-ghost" id="btn-retry">Try again</button>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
