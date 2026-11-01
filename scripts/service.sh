@@ -78,6 +78,37 @@ build() {
   mv "$BUILDS_DIR/ACTIVE.tmp" "$BUILDS_DIR/ACTIVE"
 }
 
+# True if $1 only links macOS system libraries (so a copy of it runs anywhere).
+is_standalone() {
+  command -v otool >/dev/null 2>&1 || return 0
+  ! otool -L "$1" 2>/dev/null | tail -n +2 | awk '{print $1}' | grep -qvE '^(/usr/lib/|/System/)'
+}
+
+# Downloads the official nodejs.org build of version $1 for arch $2, verifies
+# its checksum, and writes its node binary to $3.
+fetch_official_node() {
+  case "$2" in arm64) NARCH=arm64 ;; x86_64) NARCH=x64 ;; *) NARCH="$2" ;; esac
+  NAME="node-$1-darwin-$NARCH"
+  BASE="https://nodejs.org/dist/$1"
+  DL="$(mktemp -d)"
+  echo "Your Node ($1) depends on libraries outside itself; downloading the official standalone build…"
+  if ! curl -fsSL "$BASE/$NAME.tar.gz" -o "$DL/$NAME.tar.gz" || ! curl -fsSL "$BASE/SHASUMS256.txt" -o "$DL/SHASUMS256.txt"; then
+    rm -rf "$DL"
+    echo "✗ Couldn't download $BASE/$NAME.tar.gz — check your internet connection." >&2
+    exit 1
+  fi
+  WANT="$(awk -v f="$NAME.tar.gz" '$2 == f {print $1}' "$DL/SHASUMS256.txt")"
+  GOT="$(shasum -a 256 "$DL/$NAME.tar.gz" | awk '{print $1}')"
+  if [ -z "$WANT" ] || [ "$WANT" != "$GOT" ]; then
+    rm -rf "$DL"
+    echo "✗ Checksum mismatch for $NAME.tar.gz — not using it." >&2
+    exit 1
+  fi
+  tar -xzf "$DL/$NAME.tar.gz" -C "$DL" "$NAME/bin/node"
+  mv "$DL/$NAME/bin/node" "$3"
+  rm -rf "$DL"
+}
+
 # Copies the current Node into .linkdeck/runtime/node (this Mac's architecture
 # only, ~120 MB). Pass "refresh" to replace an existing copy.
 ensure_runtime() {
@@ -90,7 +121,11 @@ ensure_runtime() {
   mkdir -p "$RUNTIME_DIR"
   TMP_NODE="$RUNTIME_DIR/node.tmp.$$"
   ARCH="$(uname -m)"
-  if command -v lipo >/dev/null 2>&1 && [ "$(lipo -archs "$SRC" 2>/dev/null | wc -w | tr -d ' ')" -gt 1 ]; then
+  if ! is_standalone "$SRC"; then
+    # e.g. Homebrew's Node links libnode/libuv/icu… from elsewhere, so a lone
+    # copy can't start. Fetch the official self-contained build instead.
+    fetch_official_node "$("$SRC" -v)" "$ARCH" "$TMP_NODE"
+  elif command -v lipo >/dev/null 2>&1 && [ "$(lipo -archs "$SRC" 2>/dev/null | wc -w | tr -d ' ')" -gt 1 ]; then
     lipo "$SRC" -thin "$ARCH" -output "$TMP_NODE"
   else
     cp "$SRC" "$TMP_NODE"
